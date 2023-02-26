@@ -11,3 +11,22 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+canvas {
+  /* position: fixed;
+  top: 0;
+  left: 0; */
+  width: 100vh;
+  height: 100vh;
+  z-index: -1;
+  /* cursor: crosshair; */
+}
+
+.container {
+  position: relative;
+  background-color: #f0f0f0;
+}
+
+/* canvas:hover {
+  cursor: pointer;
+} */
