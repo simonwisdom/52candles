@@ -1,19 +1,19 @@
 {
   "files": {
     "main.css": "/52candles/static/css/main.0b82b5b4.css",
-    "main.js": "/52candles/static/js/main.ff15b545.js",
+    "main.js": "/52candles/static/js/main.40b97b45.js",
     "static/js/787.c9a229f9.chunk.js": "/52candles/static/js/787.c9a229f9.chunk.js",
-    "static/media/brown-wooden-flooring.jpg": "/52candles/static/media/brown-wooden-flooring.4f576faa0253fc46fb6a.jpg",
-    "static/media/lava.jpeg": "/52candles/static/media/lava.3a6fc8bc471f47f44f87.jpeg",
+    "static/media/brown-wooden-flooring.jpeg": "/52candles/static/media/brown-wooden-flooring.6241b7bc18de35ab553a.jpeg",
+    "static/media/lava.jpg": "/52candles/static/media/lava.d7e8bcd9e2ea7626ef67.jpg",
     "static/media/flame.png": "/52candles/static/media/flame.4b3bbd2f74f1d8545e25.png",
     "static/media/candle-wax2.webp": "/52candles/static/media/candle-wax2.6382c214dfe1d2a0fd18.webp",
     "index.html": "/52candles/index.html",
     "main.0b82b5b4.css.map": "/52candles/static/css/main.0b82b5b4.css.map",
-    "main.ff15b545.js.map": "/52candles/static/js/main.ff15b545.js.map",
+    "main.40b97b45.js.map": "/52candles/static/js/main.40b97b45.js.map",
     "787.c9a229f9.chunk.js.map": "/52candles/static/js/787.c9a229f9.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.0b82b5b4.css",
-    "static/js/main.ff15b545.js"
+    "static/js/main.40b97b45.js"
   ]
 }
