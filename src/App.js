@@ -2,12 +2,13 @@ import React, { useRef, useState, useEffect, Suspense } from 'react';
 import { Canvas, useThree, useFrame, useLoader } from '@react-three/fiber';
 import * as THREE from 'three';
 
-import { PerspectiveCamera, Environment, Stage, Html } from '@react-three/drei';
+import { PerspectiveCamera, Environment, Stage } from '@react-three/drei';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import flame from './assets/flame.png'
-import woodenFloor from './assets/brown-wooden-flooring.jpg'
+import woodenFloor from './assets/brown-wooden-flooring.jpeg'
 import candleWax from './assets/candle-wax2.webp'
+import lava from './assets/lava.jpg'
 
 import { extend } from '@react-three/fiber'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader'
@@ -24,6 +25,10 @@ function CameraControls() {
   // Set the zoom and rotate speeds
   controls.zoomSpeed = 0.05;
   controls.rotateSpeed = 0.2;
+
+  // Set the starting camera position
+  // controls.target.set(0, 0, 0);
+  camera.position.set(0, 3, 4);
 
   useFrame(() => controls.update());
   return null;
@@ -83,7 +88,7 @@ function Table(props) {
   );
 }
 
-function FloatingNumber(text){
+function FloatingTextbox(text){
   const font = new FontLoader().parse(myFont);
   const displayText = text.text
   const textRef = useRef();
@@ -100,6 +105,28 @@ function FloatingNumber(text){
     >
         <textGeometry args={[`${displayText}`, textOptions]}/>
         <meshLambertMaterial attach='material' />
+    </mesh>
+   )
+}
+
+function WelcomeText(text) {
+  const font = new FontLoader().parse(myFont);
+  const displayText = text.text
+  const textRef = useRef();
+  const texture = useLoader(THREE.TextureLoader, lava)
+
+  const textOptions = {
+    font,
+    size: 0.3,
+    height: 0.1,
+  };
+
+
+  return (
+    <mesh position={[-1.8,2,-1]} ref={textRef}
+    >
+        <textGeometry args={[`${displayText}`, textOptions]}/>
+        <meshLambertMaterial attach='material' map={texture} />
     </mesh>
    )
 }
@@ -140,28 +167,47 @@ function CandleFlame(props, onClick) {
     }
   })
 
-  const handleClick = () => {
+  // async function navigateToPost(number) {
+  //   // fetch the RSS feed
+  //   const response = await fetch("https://52weeks.substack.com/feed");
+
+  //   // parse the XML data
+  //   const xml = await response.text();
+  //   const parser = new DOMParser();
+  //   const doc = parser.parseFromString(xml, "application/xml");
+
+  //   // find the link element for the desired post
+  //   const links = doc.getElementsByTagName("link");
+  //   let url = null;
+  //   for (let i = 0; i < links.length; i++) {
+  //     const link = links[i];
+  //     const href = link.getAttribute("href");
+  //     if (href && href.includes(`/p/week-${number}-`)) {
+  //       url = href;
+  //       break;
+  //     }
+  //   }
+
+  //   // navigate to the URL
+  //   if (url) {
+  //     window.location.href = url;
+  //   } else {
+  //     console.error(`Post for week ${number} not found`);
+  //   }
+  // }
+
+  const handleClick = (index) => {
     if (onClick && showObject) {
       // Get the 2D position of the text box
       const { x, y } = getScreenPosition(flameRef.current, camera, window.innerWidth, window.innerHeight);
 
       console.log('Clicked', x, y);
 
-      return (
-        <mesh>
-        <Html center>
-          <div
-            className='popup'
-            style={{ position: 'absolute', left: `${x}px`, top: `${y}px` }}
-            onClick={onClick}
-          >
-            Test
-          </div>
-        </Html>
-        </mesh>
-      );
+      window.location.href = 'https://www.52weeks.substack.com';
 
-      // // Create a new div to hold the popup content
+      // navigateToPost(index);
+
+      // Create a new div to hold the popup content
       // const popup = document.createElement('div');
       // popup.classList.add('popup');
       // popup.style.left = `${x}px`;
@@ -197,13 +243,12 @@ function CandleFlame(props, onClick) {
       <planeGeometry attach="geometry" args={[0.15, 0.3]} />
       <meshBasicMaterial attach="material" map={texture} transparent />
     </mesh>
-      <FloatingNumber position={[0,0,0]} text={`${index + 1}`}/>
+      <FloatingTextbox position={[0,0,0]} text={`${index + 1}`}/>
     </group>
   );
 }
 
-
-function Candle({ position, index }) {
+function Candle({ position, onClick, index }) {
   const candleRef = useRef();
   // const { position } = props;
   const texture = useLoader(THREE.TextureLoader, candleWax)
@@ -217,12 +262,14 @@ function Candle({ position, index }) {
   });
 
   // Candle geometry
-  const candleGeometry = new THREE.CylinderGeometry(0.1, 0.12, 1, 32);
+  const candleGeometry = new THREE.CylinderGeometry(0.07, 0.12, 1, 32);
+  const candleInnerGeometry = new THREE.CylinderGeometry(0.04, 0.04, 1.05, 32);
 
   // Candle mesh
   return (
     <group ref={candleRef} position={position} >
       <mesh geometry={candleGeometry} material={candleMaterial} />
+      <mesh geometry={candleInnerGeometry} material={candleMaterial} />
       <CandleFlame position={[0,0.6,0]} index={index}/>
     </group>
   );
@@ -242,7 +289,8 @@ function CandleScene() {
   return (
     <>
       <ambientLight intensity={0.2} />
-      <pointLight ref={lightRef} color={0xffa500} distance={10} />
+      <pointLight ref={lightRef} color={'#E7E0CC'} distance={10} />
+      <WelcomeText position={[0,0,0]} text={`52 Candles of 2023`}/>
       <Table position={[0, -0.5, 0]} />
 
       {/* First 50 candles */}
@@ -272,16 +320,16 @@ function CandleScene() {
 function App() {
   return (
     <Canvas>
-      <Suspense fallback={null}>
+      {/* <Suspense fallback={null}>
           <Stage environment={null} intensity={1} contactShadowOpacity={0.1} shadowBias={-0.0015}>
           <Environment
               background={true} // Whether to affect scene.background
-              files={'cathedral.hdr'}
-              path={'/'}
+              files={'piano.hdr'}
+              path={'/src/assets/'}
             />
           </Stage>
-        </Suspense>
-       <PerspectiveCamera position={[0, 0, 3]} />
+        </Suspense> */}
+      <PerspectiveCamera position={[0, 0, 3]} />
       <CandleScene />
       <CameraControls />
     </Canvas>
